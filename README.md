@@ -1,5 +1,13 @@
 # CsvHelper
-A tool for converting csv to lua or json.
+A tool for converting csv to lua.
 
 CSVHelper
-'python3.8 test.py ./lootData.csv'
+
+## Usage
+`python3.8 test.py ./lootData.csv`
+
+## Introduction
+|## Desc | desc| desc|
+|# field type| int| string|
+|# field name| id| name|
+|1001|1001|trace|
