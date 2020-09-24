@@ -3,10 +3,10 @@
 import os
 import sys
 
-class CSVHelper(object):
-	"""docstring for CSVHelper"""
+class Csvhelper(object):
+	"""docstring for Csvhelper"""
 	def __init__(self):
-		super(CSVHelper, self).__init__()	
+		super(Csvhelper, self).__init__()	
 
 	def parse_types(self, line):
 		if line[0] == "#":
