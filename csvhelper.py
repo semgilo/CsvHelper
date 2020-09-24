@@ -104,7 +104,7 @@ class Csvhelper(object):
 		print(path)
 		with open (path, 'rb') as file:
 			buff = file.read()
-			content = buff.decode('gb2312')
+			content = buff.decode('utf-8')
 			# content = content.encode('utf-8').decode('utf-8')
 			lines = content.split("\r\n")
 			index = 1
