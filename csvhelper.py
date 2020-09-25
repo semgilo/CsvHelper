@@ -73,7 +73,7 @@ class Csvhelper(object):
 		pass
 
 	def parse_line(self, line, types, fields):
-		info = {}
+		info = []
 		values = line.split(",")
 		if len(values) != len(fields):
 			print("warning invaild line: {0}".format(line))
@@ -82,19 +82,18 @@ class Csvhelper(object):
 			t = types[i]
 			f = fields[i]
 			v = values[i]
-			print(t , f, v)
 			if t == "vector<vector<int>>":
-				info[f] = self.parse_vvint(v)
+				info.append(self.parse_vvint(v))
 			elif t == "vector<vector<string>>":
-				info[f] = self.parse_vvstring(v)
+				info.append(self.parse_vvstring(v))
 			elif t == "vector<int>":
-				info[f] = self.parse_vint(v)
+				info.append(self.parse_vint(v))
 			elif t == "vector<string>":
-				info[f] = self.parse_vstring(v)
+				info.append(self.parse_vstring(v))
 			elif t == "string":
-				info[f] = self.parse_string(v)
+				info.append(self.parse_string(v))
 			elif t == "int":
-				info[f] = self.parse_int(v)
+				info.append(self.parse_int(v))
 			else:
 				print("unsupport type : " + t)
 
@@ -109,7 +108,8 @@ class Csvhelper(object):
 			lines = content.split("\r\n")
 			index = 1
 			csvinfo = {}
-			csvinfo["content"] = {}
+			csvinfo["content"] = []
+			csvinfo["keymap"] = {}
 			self.csvinfo = csvinfo
 			for line in lines:
 				if index == 1:
@@ -119,11 +119,12 @@ class Csvhelper(object):
 				elif index == 3:
 					csvinfo['fields'] = self.parse_fields(line)
 				else:
-					print(line)
+					# print(line)
 					item = self.parse_line(line, csvinfo['types'], csvinfo['fields'])
 					if item:
-						print(item)
-						csvinfo["content"][item['id']] = item
+						# print(item)
+						csvinfo["keymap"][item[0]] = len(csvinfo["content"]) 
+						csvinfo["content"].append(item)
 				index = index + 1	
 
 			return csvinfo
@@ -139,13 +140,51 @@ class Csvhelper(object):
 			file.write("--------------------自动生成，请勿修改--------------------\n")
 			file.write("--------------------------------------------------------\n")
 
-			file.write("function get_{0}_configs()\n".format(token))
-			file.write("\treturn {\n")
-			for (k,v) in self.csvinfo["content"].items():
+			# fields
+			file.write("local fields = {")
+			for field in self.csvinfo["fields"]:
+				file.write("\"{0}\",".format(field))
+			file.write("}\n")
+
+			# fieldmap
+			file.write("local fieldmap = {")
+			i = 1
+			for field in self.csvinfo["fields"]:
+				file.write("[\"{0}\"]={1},".format(field, i))
+				i = i + 1
+			file.write("}\n")
+
+			# keymap
+			file.write("local keymap = {")
+			for (k,v) in self.csvinfo["keymap"].items():
+				file.write("[{0}]={1},".format(k, v))
+			file.write("}\n")
+
+			# content
+			file.write("local content = {\n")
+			for v in self.csvinfo["content"]:
 				s = str(v).replace("[", "{").replace("]", "}").replace("\'", "\"").replace(":", "=")
-				file.write("\t\t{0}\n".format(s))
-			file.write("\t}\n")
-			file.write("end\n".format())
+				file.write("\t{0}\n".format(s))
+			file.write("}\n")
+			file.write('''
+local wrap = function ( list )
+	return setmetatable({}, {
+		__index = function ( _, k )
+			local i = fieldmap[k]
+			return list[i]
+		end
+	})
+end
+
+return setmetatable({}, {
+    __index = function(_, k)
+        local i= keymap[k] + 1
+        local line = content[i]
+        return wrap(line)
+    end,
+})
+    ''')
+
 
 
 
