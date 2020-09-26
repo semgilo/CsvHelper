@@ -164,7 +164,7 @@ class Csvhelper(object):
 			file.write("local content = {\n")
 			for v in self.csvinfo["content"]:
 				s = str(v).replace("[", "{").replace("]", "}").replace("\'", "\"").replace(":", "=")
-				file.write("\t{0}\n".format(s))
+				file.write("\t{0},\n".format(s))
 			file.write("}\n")
 			
 			file.write("\n")
