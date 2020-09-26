@@ -21,6 +21,8 @@ class Csvhelper(object):
 	def parse_int(self, str):
 		if len(str.strip()) == 0:
 			return 0
+		if "." in str:
+			return float(str.strip())
 		return int(str.strip())
 
 	def parse_vint(self, str):
@@ -118,6 +120,8 @@ class Csvhelper(object):
 					csvinfo['types'] = self.parse_types(line)
 				elif index == 3:
 					csvinfo['fields'] = self.parse_fields(line)
+				elif len(line) > 0 and line[0] == "#":
+					pass
 				else:
 					# print(line)
 					item = self.parse_line(line, csvinfo['types'], csvinfo['fields'])
