@@ -166,24 +166,14 @@ class Csvhelper(object):
 				s = str(v).replace("[", "{").replace("]", "}").replace("\'", "\"").replace(":", "=")
 				file.write("\t{0}\n".format(s))
 			file.write("}\n")
-			file.write('''
-local wrap = function ( list )
-	return setmetatable({}, {
-		__index = function ( _, k )
-			local i = fieldmap[k]
-			return list[i]
-		end
-	})
-end
-
-return setmetatable({}, {
-    __index = function(_, k)
-        local i= keymap[k] + 1
-        local line = content[i]
-        return wrap(line)
-    end,
-})
-    ''')
+			
+			file.write("\n")
+			file.write("return {\n")
+			file.write("\tfileds=fields,\n")
+			file.write("\tfieldmap=fieldmap,\n")
+			file.write("\tkeymap=keymap,\n")
+			file.write("\tcontent=content,\n")
+			file.write("}")
 
 
 
