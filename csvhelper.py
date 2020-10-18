@@ -107,7 +107,8 @@ class Csvhelper(object):
 			buff = file.read()
 			content = buff.decode('utf-8')
 			# content = content.encode('utf-8').decode('utf-8')
-			lines = content.split("\r\n")
+			content = content.replace("\r\n", "\n")
+			lines = content.split("\n")
 			index = 1
 			csvinfo = {}
 			csvinfo["content"] = []
