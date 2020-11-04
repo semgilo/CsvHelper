@@ -110,6 +110,7 @@ class Csvhelper(object):
 			content = content.replace("\r\n", "\n")
 			lines = content.split("\n")
 			index = 1
+			keyIndex = 1
 			csvinfo = {}
 			csvinfo["content"] = []
 			csvinfo["keymap"] = {}
@@ -128,8 +129,9 @@ class Csvhelper(object):
 					item = self.parse_line(line, csvinfo['types'], csvinfo['fields'])
 					if item:
 						# print(item)
-						csvinfo["keymap"][item[0]] = len(csvinfo["content"]) 
+						csvinfo["keymap"][item[0]] = keyIndex
 						csvinfo["content"].append(item)
+						keyIndex = keyIndex + 1
 				index = index + 1	
 
 			return csvinfo
