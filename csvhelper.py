@@ -102,7 +102,6 @@ class Csvhelper(object):
 		return info
 
 	def parse(self, path):
-		print(path)
 		with open (path, 'rb') as file:
 			buff = file.read()
 			content = buff.decode('utf-8')
